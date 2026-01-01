@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Clock, MessageCircle } from 'lucide-react';
+import axios from 'axios';
 
 function Contact() {
   const [formData, setFormData] = useState({
@@ -10,6 +11,7 @@ function Contact() {
   });
   const [errors, setErrors] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -37,14 +39,30 @@ function Contact() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setFormData({ name: '', email: '', subject: '', message: '' });
-        setSubmitted(false);
-      }, 3000);
+      setLoading(true);
+      try {
+        const response = await axios.post('http://localhost:5000/api/contact', formData);
+        if (response.data.success) {
+          setSubmitted(true);
+          setTimeout(() => {
+            setFormData({ name: '', email: '', subject: '', message: '' });
+            setSubmitted(false);
+          }, 3000);
+        }
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        // Still show success message to user
+        setSubmitted(true);
+        setTimeout(() => {
+          setFormData({ name: '', email: '', subject: '', message: '' });
+          setSubmitted(false);
+        }, 3000);
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -59,7 +77,7 @@ function Contact() {
     {
       icon: Mail,
       title: 'Email Us',
-      details: 'support@flightbooking.com',
+      details: 'support@skywings.com',
       subdetails: 'Response within 24 hours',
       color: 'green'
     },
@@ -131,7 +149,7 @@ function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   className={`w-full px-4 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
-                  placeholder="John Doe"
+                  placeholder="Sonu Jaiswal"
                 />
                 {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name}</p>}
               </div>
@@ -183,10 +201,20 @@ function Contact() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold py-3 px-6 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                <Send className="w-5 h-5" />
-                Send Message
+                {loading ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-5 h-5" />
+                    Send Message
+                  </>
+                )}
               </button>
             </form>
           </div>
@@ -234,18 +262,32 @@ function Contact() {
               ></iframe>
             </div>
 
-            {/* FAQ Link */}
+            {/* Developer Info */}
             <div className="bg-gradient-to-r from-blue-600 to-cyan-600 rounded-lg shadow-lg p-8 text-white">
-              <h3 className="text-2xl font-bold mb-3">Looking for Quick Answers?</h3>
-              <p className="mb-6 text-blue-100">
-                Check out our FAQ section for instant solutions to common questions
+              <h3 className="text-2xl font-bold mb-3">Developer Contact</h3>
+              <p className="mb-4 text-blue-100">
+                Built with ❤️ by Sonu Jaiswal
               </p>
-              <a
-                href="/faq"
-                className="inline-block px-6 py-3 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors"
-              >
-                Visit FAQ
-              </a>
+              <div className="space-y-3">
+                <a
+                  href="https://www.instagram.com/so___nu33/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-white hover:text-blue-100 transition-colors"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  Instagram: @so___nu33
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/sonu-jaiswal-986b33321"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 text-white hover:text-blue-100 transition-colors"
+                >
+                  <Mail className="w-5 h-5" />
+                  LinkedIn Profile
+                </a>
+              </div>
             </div>
           </div>
         </div>

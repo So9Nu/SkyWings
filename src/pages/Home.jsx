@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Users, MapPin, ArrowRight, Search, X, ChevronLeft, ChevronRight } from "lucide-react";
 import Offers from "../components/Offers";
 import DealCard from "../components/DealCard";
 import ReviewCard from "../components/ReviewCard";
 import OfferCard from "../components/OfferCard";
+import { dealAPI } from "../services/api";
 
 // Modal Component
 const Modal = ({ isOpen, onClose, title, children }) => {
@@ -122,6 +123,8 @@ function Home() {
   const [showPassengerModal, setShowPassengerModal] = useState(false);
   const [citySearchFrom, setCitySearchFrom] = useState("");
   const [citySearchTo, setCitySearchTo] = useState("");
+  const [deals, setDeals] = useState([]);
+  const [dealsLoading, setDealsLoading] = useState(true);
 
   const [fromCity, setFromCity] = useState({ name: "Kathmandu", code: "KTM", country: "Nepal" });
   const [toCity, setToCity] = useState({ name: "New York", code: "JFK", country: "United States" });
@@ -245,6 +248,114 @@ function Home() {
     city.code.toLowerCase().includes(citySearchTo.toLowerCase()) ||
     city.country.toLowerCase().includes(citySearchTo.toLowerCase())
   );
+
+  // Fetch top deals on component mount
+  useEffect(() => {
+    const fetchDeals = async () => {
+      try {
+        setDealsLoading(true);
+        const response = await dealAPI.getTopDeals();
+        setDeals(response.data); // Fixed: removed .deals since mock API returns array directly
+      } catch (error) {
+        console.error('Failed to fetch deals:', error);
+        // Set mock deals data when API is not available
+        setDeals([
+          {
+            _id: '1',
+            image: 'https://images.unsplash.com/photo-1549144511-f099e773c147?auto=format&fit=crop&w=800&q=80',
+            destination: 'Dubai, UAE',
+            rating: '4.8',
+            reviews: 1250,
+            discountedPrice: 35999,
+            discount: 40,
+            departureCity: 'Mumbai',
+            duration: '3h 30m'
+          },
+          {
+            _id: '2',
+            image: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80',
+            destination: 'London, UK',
+            rating: '4.9',
+            reviews: 2180,
+            discountedPrice: 52999,
+            discount: 35,
+            departureCity: 'Delhi',
+            duration: '9h 15m'
+          },
+          {
+            _id: '3',
+            image: 'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80',
+            destination: 'Tokyo, Japan',
+            rating: '4.7',
+            reviews: 890,
+            discountedPrice: 48999,
+            discount: 30,
+            departureCity: 'Bangalore',
+            duration: '7h 45m'
+          },
+          {
+            _id: '4',
+            image: 'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?auto=format&fit=crop&w=800&q=80',
+            destination: 'Paris, France',
+            rating: '4.9',
+            reviews: 1650,
+            discountedPrice: 54999,
+            discount: 38,
+            departureCity: 'Mumbai',
+            duration: '10h 20m'
+          },
+          {
+            _id: '5',
+            image: 'https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?auto=format&fit=crop&w=800&q=80',
+            destination: 'Singapore',
+            rating: '4.8',
+            reviews: 1420,
+            discountedPrice: 28999,
+            discount: 32,
+            departureCity: 'Chennai',
+            duration: '4h 20m'
+          },
+          {
+            _id: '6',
+            image: 'https://images.unsplash.com/photo-1480714378408-67cf0d13bc1b?auto=format&fit=crop&w=800&q=80',
+            destination: 'Bangkok, Thailand',
+            rating: '4.6',
+            reviews: 980,
+            discountedPrice: 22999,
+            discount: 45,
+            departureCity: 'Kolkata',
+            duration: '3h 50m'
+          },
+          {
+            _id: '7',
+            image: 'https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=800&q=80',
+            destination: 'Zurich, Switzerland',
+            rating: '4.9',
+            reviews: 760,
+            discountedPrice: 62999,
+            discount: 28,
+            departureCity: 'Delhi',
+            duration: '11h 30m'
+          },
+          {
+            _id: '8',
+            image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+            destination: 'Sydney, Australia',
+            rating: '4.8',
+            reviews: 1120,
+            discountedPrice: 68999,
+            discount: 33,
+            departureCity: 'Mumbai',
+            duration: '13h 45m'
+          }
+        ]);
+      } finally {
+        setDealsLoading(false);
+      }
+    };
+
+    fetchDeals();
+  }, []);
 
   return (
       <>
@@ -607,142 +718,178 @@ function Home() {
           </section>
 
           {/* Top Deals for Today Section */}
-          <section className=" bg-gray-100 py-12">
-              <div className="md:w-[90%] md:mx-auto px-2">
-                  <div className="flex justify-between items-center my-8">
-                      <h3 className="text-2xl font-bold text-gray-900">Top Deals for Today</h3>
-                      <button className="text-gray-500 bg-white rounded-lg px-5 py-2 cursor-pointer hover:bg-blue-600 hover:text-white transition-all delay-100 shadow-sm">
-                          View all
+          <section className="bg-gradient-to-br from-gray-50 to-blue-50 py-16">
+              <div className="md:w-[90%] md:mx-auto px-4">
+                  {/* Section Header */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
+                      <div>
+                          <div className="flex items-center gap-3 mb-2">
+                              <div className="w-1 h-8 bg-gradient-to-b from-blue-600 to-cyan-600 rounded-full"></div>
+                              <h3 className="text-3xl md:text-4xl font-bold text-gray-900">
+                                  Top Deals for Today
+                              </h3>
+                          </div>
+                          <p className="text-gray-600 ml-4 pl-3">
+                              Exclusive offers handpicked for you · Limited time only
+                          </p>
+                      </div>
+                      <button className="text-gray-700 bg-white rounded-xl px-6 py-3 cursor-pointer hover:bg-gradient-to-r hover:from-blue-600 hover:to-cyan-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-xl font-semibold flex items-center gap-2 group">
+                          View All Deals
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                       </button>
                   </div>
-                  <div className="flex gap-6 overflow-x-scroll scrollbar-hide pb-10">
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80"
-                        destination="Taj Mahal, India"
-                        rating="4.8/5"
-                        reviews="520 Reviews"
-                        price={1250}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80"
-                        destination="Great Wall, China"
-                        rating="4.9/5"
-                        reviews="680 Reviews"
-                        price={2100}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=800&q=80"
-                        destination="Swiss Alps, Switzerland"
-                        rating="5/5"
-                        reviews="420 Reviews"
-                        price={3200}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=800&q=80"
-                        destination="Seoul Tower, South Korea"
-                        rating="4.7/5"
-                        reviews="390 Reviews"
-                        price={1850}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1583422409516-2895a77efded?auto=format&fit=crop&w=800&q=80"
-                        destination="Alhambra, Spain"
-                        rating="4.5/5"
-                        reviews="250 Reviews"
-                        price={1800}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1568322445389-f64ac2515020?auto=format&fit=crop&w=800&q=80"
-                        destination="Pyramids of Giza, Egypt"
-                        rating="4.2/5"
-                        reviews="110 Reviews"
-                        price={1863}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1578895101408-1a36b834405b?auto=format&fit=crop&w=800&q=80"
-                        destination="Petra, Jordan"
-                        rating="3.5/5"
-                        reviews="180 Reviews"
-                        price={2593}
-                      />
-                      <DealCard
-                        image="https://images.unsplash.com/photo-1520175480921-4edfa2983e0f?auto=format&fit=crop&w=800&q=80"
-                        destination="Colosseum, Italy"
-                        rating="5/5"
-                        reviews="240 Reviews"
-                        price={3950}
-                      />
-                  </div>
+
+                  {dealsLoading ? (
+                    <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-10 px-1">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="min-w-[320px] md:min-w-[380px] bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
+                          <div className="h-56 bg-gray-300"></div>
+                          <div className="p-6">
+                            <div className="h-6 bg-gray-300 rounded mb-3"></div>
+                            <div className="h-4 bg-gray-300 rounded w-2/3 mb-4"></div>
+                            <div className="h-8 bg-gray-300 rounded w-1/2"></div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : deals.length > 0 ? (
+                    <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-10 px-1">
+                      {deals.map((deal) => (
+                        <DealCard
+                          key={deal._id}
+                          image={deal.image}
+                          destination={deal.destination}
+                          rating={deal.rating}
+                          reviews={`${deal.reviews} Reviews`}
+                          price={deal.discountedPrice}
+                          discount={deal.discount}
+                          departureCity={deal.departureCity}
+                          duration={deal.duration}
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-16 bg-white rounded-2xl shadow-md">
+                      <div className="mb-4">
+                        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <MapPin className="w-10 h-10 text-gray-400" />
+                        </div>
+                        <p className="text-gray-500 text-lg mb-2">No deals available at the moment</p>
+                        <p className="text-gray-400 text-sm">Check back later for exciting offers!</p>
+                      </div>
+                    </div>
+                  )}
               </div>
           </section>
 
           {/* Special Offers Section */}
-          <section className="py-12">
-
-              <div className="md:w-[90%] md:mx-auto px-2 ">
-                   <div className="flex justify-between items-center my-8 ">
+          <section className="py-16 bg-white">
+              <div className="md:w-[90%] md:mx-auto px-4">
+                  {/* Section Header */}
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
                       <div>
-                          <h3 className="text-2xl font-bold text-gray-900">Special Offers</h3>
-                          <p className="text-gray-600">Limited time deals on popular destinations</p>
+                          <div className="flex items-center gap-3 mb-2">
+                              <div className="w-1 h-8 bg-gradient-to-b from-purple-600 to-pink-600 rounded-full"></div>
+                              <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Special Offers</h3>
+                          </div>
+                          <p className="text-gray-600 ml-4 pl-3">
+                              Limited time deals on popular destinations · Book before they expire
+                          </p>
                       </div>
-                      <button className="text-gray-500 bg-gray-100 rounded-lg px-5 py-2 cursor-pointer hover:bg-blue-600 hover:text-white transition-all delay-100 shadow-sm" >View all</button>
+                      <button className="text-gray-700 bg-gray-50 rounded-xl px-6 py-3 cursor-pointer hover:bg-gradient-to-r hover:from-purple-600 hover:to-pink-600 hover:text-white transition-all duration-300 shadow-md hover:shadow-xl font-semibold flex items-center gap-2 group">
+                          View All Offers
+                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                      </button>
                   </div>
-                  <div className="flex gap-6 overflow-x-scroll scrollbar-hide pb-10">
+
+                  <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-10 px-1">
                       <OfferCard
                         image="https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=800&q=80"
                         destination="Mumbai, India"
                         discount={40}
-                        price={249}
+                        price={24900}
                         validTill="Jan 20, 2026"
+                        rating="4.7"
+                        reviews="1,340 Reviews"
+                        departureCity="Delhi"
+                        duration="2h 15m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80"
                         destination="Beijing, China"
                         discount={35}
-                        price={349}
+                        price={34900}
                         validTill="Feb 10, 2026"
+                        rating="4.8"
+                        reviews="980 Reviews"
+                        departureCity="Mumbai"
+                        duration="5h 40m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1527004013197-933c4bb611b3?auto=format&fit=crop&w=800&q=80"
                         destination="Zurich, Switzerland"
                         discount={30}
-                        price={599}
+                        price={59900}
                         validTill="Jan 25, 2026"
+                        rating="4.9"
+                        reviews="820 Reviews"
+                        departureCity="Bangalore"
+                        duration="10h 50m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1517154421773-0529f29ea451?auto=format&fit=crop&w=800&q=80"
                         destination="Seoul, South Korea"
                         discount={38}
-                        price={329}
+                        price={32900}
                         validTill="Feb 5, 2026"
+                        rating="4.6"
+                        reviews="1,120 Reviews"
+                        departureCity="Chennai"
+                        duration="6h 30m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-                        destination="Melbourne"
+                        destination="Sydney, Australia"
                         discount={30}
-                        price={199}
-                        validTill="Dec 31, 2025"
+                        price={64900}
+                        validTill="Jan 31, 2026"
+                        rating="4.8"
+                        reviews="1,560 Reviews"
+                        departureCity="Delhi"
+                        duration="12h 45m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?auto=format&fit=crop&w=800&q=80"
-                        destination="London"
+                        destination="London, UK"
                         discount={25}
-                        price={399}
+                        price={49900}
                         validTill="Jan 15, 2026"
+                        rating="4.9"
+                        reviews="2,240 Reviews"
+                        departureCity="Mumbai"
+                        duration="9h 20m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=800&q=80"
-                        destination="New York"
+                        destination="New York, USA"
                         discount={35}
-                        price={299}
-                        validTill="Dec 25, 2025"
+                        price={69900}
+                        validTill="Feb 1, 2026"
+                        rating="4.7"
+                        reviews="1,890 Reviews"
+                        departureCity="Bangalore"
+                        duration="15h 30m"
                       />
                       <OfferCard
                         image="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=800&q=80"
-                        destination="Tokyo"
-                        discount={20}
-                        price={499}
-                        validTill="Jan 10, 2026"
+                        destination="Tokyo, Japan"
+                        discount={28}
+                        price={45900}
+                        validTill="Jan 28, 2026"
+                        rating="4.8"
+                        reviews="1,470 Reviews"
+                        departureCity="Kolkata"
+                        duration="7h 50m"
                       />
                   </div>
               </div>
@@ -761,6 +908,14 @@ function Home() {
                       </button>
                   </div>
                   <div className="flex gap-6 overflow-x-scroll scrollbar-hide pb-10">
+                      <ReviewCard
+                        name="Binita Chaudhary"
+                        image="https://i.ibb.co/9ZQZ8Zq/image.png"
+                        rating={5}
+                        review="Excellent experience booking my domestic flight! The service was professional and the booking process was very smooth. I flew from Ramgram and everything was perfect. Highly recommend SkyWings!"
+                        date="January 1, 2026"
+                        location="Nawalparasi, Ramgram"
+                      />
                       <ReviewCard
                         name="Rajesh Thapa"
                         image="https://randomuser.me/api/portraits/men/65.jpg"

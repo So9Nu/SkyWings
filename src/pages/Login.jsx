@@ -52,7 +52,7 @@ function Login() {
       // Mock login - in real app, this would call an API
       localStorage.setItem('user', JSON.stringify({
         email: formData.email,
-        name: 'John Doe'
+        name: 'Sonu Jaiswal'
       }));
       navigate('/');
     }

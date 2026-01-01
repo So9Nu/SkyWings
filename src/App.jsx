@@ -13,27 +13,44 @@ import MyBookings from './pages/MyBookings'
 import Help from './pages/Help'
 import Contact from './pages/Contact'
 import FAQ from './pages/FAQ'
+import Admin from './pages/Admin'
+import AdminLogin from './pages/AdminLogin'
+import Domestic from './pages/Domestic'
+import International from './pages/International'
 
 function App() {
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/search" element={<SearchResults />} />
-          <Route path="/flight/:id" element={<FlightDetails />} />
-          <Route path="/booking" element={<Booking />} />
-          <Route path="/confirmation" element={<Confirmation />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/my-bookings" element={<MyBookings />} />
-          <Route path="/help" element={<Help />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/faq" element={<FAQ />} />
-        </Routes>
-      </main>
-      <Footer />
+      <Routes>
+        {/* Admin Routes - No Navbar/Footer */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin" element={<Admin />} />
+
+        {/* Regular Routes with Navbar/Footer */}
+        <Route path="*" element={
+          <>
+            <Navbar />
+            <main className="flex-grow">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/domestic" element={<Domestic />} />
+                <Route path="/international" element={<International />} />
+                <Route path="/search" element={<SearchResults />} />
+                <Route path="/flight/:id" element={<FlightDetails />} />
+                <Route path="/booking" element={<Booking />} />
+                <Route path="/confirmation" element={<Confirmation />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/my-bookings" element={<MyBookings />} />
+                <Route path="/help" element={<Help />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/faq" element={<FAQ />} />
+              </Routes>
+            </main>
+            <Footer />
+          </>
+        } />
+      </Routes>
     </div>
   )
 }

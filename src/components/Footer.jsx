@@ -23,10 +23,10 @@ function Footer() {
               <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-400 transition-colors">
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors">
+              <a href="https://www.instagram.com/so___nu33/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-pink-600 transition-colors">
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
+              <a href="https://www.linkedin.com/in/sonu-jaiswal-986b33321" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-blue-700 transition-colors">
                 <Linkedin className="w-5 h-5" />
               </a>
             </div>
@@ -73,7 +73,7 @@ function Footer() {
                 <Mail className="w-5 h-5 text-cyan-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="text-gray-400">Email</p>
-                  <p className="text-white font-semibold">support@flightbooking.com</p>
+                  <p className="text-white font-semibold">support@skywings.com</p>
                 </div>
               </li>
               <li className="flex items-start gap-3">
@@ -91,7 +91,7 @@ function Footer() {
         <div className="border-t border-gray-800 pt-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <p className="text-gray-400 text-sm text-center md:text-left">
-              © 2024 Flight Booking. All rights reserved.
+              © 2025 SkyWings by Sonu Jaiswal. All rights reserved.
             </p>
             <div className="flex gap-6 text-sm">
               <a href="#" className="text-gray-400 hover:text-white transition-colors">Terms</a>
