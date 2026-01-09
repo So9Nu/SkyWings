@@ -910,10 +910,18 @@ function Home() {
                   <div className="flex gap-6 overflow-x-scroll scrollbar-hide pb-10">
                       <ReviewCard
                         name="Binita Chaudhary"
-                        image="https://i.ibb.co/9ZQZ8Zq/image.png"
+                        image="customer review.jpeg"
                         rating={5}
                         review="Excellent experience booking my domestic flight! The service was professional and the booking process was very smooth. I flew from Ramgram and everything was perfect. Highly recommend SkyWings!"
                         date="January 1, 2026"
+                        location="Nawalparasi, Ramgram"
+                      />
+                      <ReviewCard
+                        name="Anu Sherstha"
+                        image="customer review.jpeg"
+                        rating={5}
+                        review="Really enjoyed my trip — booking was effortless and the team was very helpful. Flew from Ramgram and had a comfortable journey. Thank you SkyWings!"
+                        date="January 2, 2026"
                         location="Nawalparasi, Ramgram"
                       />
                       <ReviewCard
